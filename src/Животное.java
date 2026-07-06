@@ -111,15 +111,17 @@ public void main(String[] args) {
     Собака dog2 = new Собака("Рекс");
 
     //Создаём котов:
-    Кот cat1 = new Кот("Барсик", 5);
-    Кот cat2 = new Кот("Кузя", 10);
-    Кот cat3 = new Кот("Мурзик", 15);
+    Кот[] cats = {
+        new Кот("Барсик", 5),
+        new Кот("Кузя", 10),
+        new Кот("Мурзик", 15)
+    };
 
     //Проверка навыков:
     dog1.run(150);
     dog1.swim(300);
-    cat1.run(201);
-    cat1.swim(350);
+    cats[0].run(201);
+    cats[1].swim(350);
 
     //Счётчики:
     System.out.println("Счётчик Животных: " + Животное.animalCount);
@@ -129,14 +131,14 @@ public void main(String[] args) {
     //Кормление:
     plate1.amountFood();
     plate1.addFood(29);
-    cat1.eat(plate1);
-    cat2.eat(plate1);
-    cat3.eat(plate1);
+    for (Кот cat : cats) {
+        cat.eat(plate1);
+    }
     plate1.amountFood();
 
     //Сытость:
     System.out.println("Статус сытости:");
-    System.out.println("Барсик: " + cat1.sitost);
-    System.out.println("Кузя: " + cat2.sitost);
-    System.out.println("Мурзик: " + cat3.sitost);
+    for (Кот cat : cats) {
+        System.out.println(cat.name + " : " + cat.sitost);
+    }
 }
