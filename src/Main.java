@@ -4,6 +4,8 @@ import java.util.Set;
 
 public class Main {
 
+    //------------------------------------------- ЗАДАНИЕ №1 -------------------------------------------
+
     //Метод по исключению отстающих
     public static void removeLaggingStudent(List<Student> students){
         students.removeIf(student -> student.getAverageGrade() < 3);
@@ -26,6 +28,11 @@ public class Main {
     }
 
     public static void main(String[] args) {
+
+        System.out.println();
+        System.out.println("----------------------- Задание №1 -----------------------");
+        System.out.println();
+
         Student student1 = new Student("Михаил", "QA", 51, List.of(5, 4, 5, 5));
         Student student2 = new Student("Александра", "QA", 51, List.of(5, 3, 3 , 2));
         Student student3 = new Student("Андрей", "QA", 51, List.of(4, 4, 4, 3));
@@ -70,5 +77,28 @@ public class Main {
 
         System.out.println();
         printStudents(studentSet, 52);
+
+
+        //------------------------------------------- ЗАДАНИЕ №2 -------------------------------------------
+        System.out.println();
+        System.out.println("----------------------- Задание №2 -----------------------");
+        System.out.println();
+
+        PhoneBook phoneBook = new PhoneBook();
+
+        phoneBook.add("Румянцев", "+7 (952) 145-73-20");
+        phoneBook.add("Панин", "+7 (901) 959-50-50");
+        phoneBook.add("Куропяткин", "+7 (918) 413-59-68");
+        phoneBook.add("Вагина", "+7 (939) 291-67-37");
+        phoneBook.add("Румянцев", "+7 (926) 781-43-73");
+
+        System.out.println("Номера для фамилии Иванов: " + phoneBook.get("Иванов"));
+        System.out.println("Номера для фамилии Панин: " + phoneBook.get("Панин"));
+        System.out.println("Номера для фамилии Куропяткин: " + phoneBook.get("Куропяткин"));
+        System.out.println("Номера для фамилии Вагина: " + phoneBook.get("Вагина"));
+
+        //Проверка дубликата
+        System.out.println("Номера для фамилии Румянцев: " + phoneBook.get("Румянцев"));
+
     }
 }
