@@ -1,117 +1,74 @@
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+
 public class Main {
 
-    public static int checkMassive(String[][] array, String arrayName) throws MyArraySizeException, MyArrayDataException{
+    //Метод по исключению отстающих
+    public static void removeLaggingStudent(List<Student> students){
+        students.removeIf(student -> student.getAverageGrade() < 3);
+    }
 
-        //Проверка кол-ва строк и столбцов:
-        if (array.length != 4) {
-            throw new MyArraySizeException("Ошибка! В " + arrayName + " строк должно быть 4! Сейчас: " + array.length);
+    //Перевод успевающего студента на след.курс
+    public static void transitionAllStudents(List<Student> students) {
+        for (Student student : students) {
+            student.transition();
         }
-        for (int i = 0; i < array.length; i++){
+    }
 
-            if(array[i].length != 4) {
-                throw new MyArraySizeException("Ошибка! В " + arrayName + " колонок должно быть 4! А сейчас: " + array[i].length);
+    public static void printStudents(Set<Student> students, int course){
+        System.out.println("---Студенты " + course + " курса:---");
+        for (Student student : students) {
+            if (student.getCourse() == course) {
+                System.out.println(student.getName());
             }
         }
-        System.out.println("Проверка прошла! " + arrayName + " соответствует требованиям!");
-
-        //Считаем сумму:
-        int sum = 0;
-
-        for (int i = 0; i < array.length; i++) {
-            for (int j = 0; j < array.length; j++) {
-                try {
-                    String m = array[i][j];
-                    if (m == null) {
-                        m = "0";
-                    }
-                    sum += Integer.parseInt(m);
-                }
-                catch (NumberFormatException e) {
-                    throw new MyArrayDataException("Ошибка в " + arrayName + " В ячейках: " + i + " " + j + " лежит не число: " + array[i][j]);
-                }
-            }
-        }
-        return sum;
     }
 
     public static void main(String[] args) {
-        String[][] dM1 = new String[4][4];
-        String[][] dM2 = new String[4][2];
-        String[][] dM3 = {
-                {"1", "2", "3", "4"},
-                {"5", "6", "5", "8"},
-                {"1", "1", "1", "1"},
-                {"2", "2", "2", "2"}
-        };
-        String[][] dM4 = {
-                {"1", "2", "76", "5"},
-                {"5", "2", "1", "99"},
-                {"1", "3", "3", "3"},
-                {"2", "5", "2", "1"}
-        };
-        String[][] dM5 = {
-                {"5", "упс", "5", "5"},
-                {"5", "132", "5", "5"},
-                {"5", "12", "5", "5"},
-                {"5", "33", "5", "5"}
-        };
+        Student student1 = new Student("Михаил", "QA", 51, List.of(5, 4, 5, 5));
+        Student student2 = new Student("Александра", "QA", 51, List.of(5, 3, 3 , 2));
+        Student student3 = new Student("Андрей", "QA", 51, List.of(4, 4, 4, 3));
+        Student student4 = new Student("Алексей", "QA", 51, List.of(1, 2, 3, 4));
+        Student student5 = new Student("Екатерина", "QA", 51, List.of(1, 3, 5, 4));
+        Student student6 = new Student("Артём", "QA", 51, List.of(3, 5, 3, 4));
+        Student student7 = new Student("Даниил", "QA", 51, List.of(2, 3, 2, 4));
+        Student student8 = new Student("Илья", "QA", 51, List.of(1, 2, 1, 2));
 
-        try {
-            System.out.println("---Проверяем #1---");
-            int sum = checkMassive(dM1, "Массив №1");
-            System.out.println("Сумма в массиве: " + sum);
-        }  catch (MyArraySizeException | MyArrayDataException e) {
-            System.out.println(e.getMessage());
-        }
 
-        try {
-            System.out.println("---Проверяем #2---");
-            int sum = checkMassive(dM2, "Массив №2");
-            System.out.println("Сумма в массиве: " + sum);
-        } catch (MyArraySizeException | MyArrayDataException e) {
-            System.out.println(e.getMessage());
-        }
+        //Список из студентов:
+        List<Student> studentsList = new ArrayList<>();
 
-        try {
-            System.out.println("---Проверяем #3---");
-            int sum = checkMassive(dM3, "Массив №3");
-            System.out.println("Сумма в массиве: " + sum);
-        } catch (MyArraySizeException | MyArrayDataException e) {
-            System.out.println(e.getMessage());
-        }
+        studentsList.add(student1);
+        studentsList.add(student2);
+        studentsList.add(student3);
+        studentsList.add(student4);
+        studentsList.add(student5);
+        studentsList.add(student6);
+        studentsList.add(student7);
+        studentsList.add(student8);
 
-        try {
-            System.out.println("---Проверяем №4---");
-            int sum = checkMassive(dM4, "Массив №4");
-            System.out.println("Сумма в массиве: " + sum);
-        }  catch (MyArraySizeException | MyArrayDataException e) {
-            System.out.println(e.getMessage());
-        }
+        //создаём set
+        java.util.Set<Student> studentSet = new java.util.HashSet<>(studentsList);
 
-        try {
-            System.out.println("---Проверяем №5---");
-            int sum = checkMassive(dM5, "Массив №5");
-            System.out.println("Сумма в массиве: " + sum);
-        }  catch (MyArraySizeException | MyArrayDataException e) {
-            System.out.println(e.getMessage());
-        }
+        //Отображение всех студентов из списка:
+        System.out.println("Всего студентов в коллекции: " + studentsList.size());
 
-        System.out.println("---Проверяем Выход За Границы Массива---");
+        //Удаление отстающих:
+        removeLaggingStudent(studentsList);
 
-        try {
-            System.out.println("Проверка массива №1");
-            String[] bounds = dM1[3];
-            System.out.println("Исключений не выявлено!");
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Поймали исключение: " + e);
-        }
+        //Отображение всех студентов из списка:
+        System.out.println();
+        System.out.println("Всего студентов в коллекции (после чистки): " + studentsList.size());
 
-        try {
-            System.out.println("Проверка массива №2");
-            String[] bounds = dM2[10];
-            System.out.println("Исключений не выявлено!");
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Поймали исключение: " + e);
-        }
+        //Перевод студентов:
+        transitionAllStudents(studentsList);
+
+        //Отображаем весь список снова:
+        System.out.println();
+        System.out.println("Всего студентов в коллекции (после перевода): " + studentsList.size());
+
+        System.out.println();
+        printStudents(studentSet, 52);
     }
 }
