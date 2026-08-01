@@ -82,7 +82,7 @@ public class MtsPage {
         ).click();
     }
 
-    // Получить placeholder любого поля по id
+    // Получаем placeholder любого поля по id
     public String getPlaceholder(String id) {
 
         return driver.findElement(By.id(id))

@@ -34,6 +34,7 @@ public class MtsPaymentTest {
         // Переходим на страницу оплаты
         mtsPage.clickContinue();
 
+        // Проваливаемся в новое "окно"
         mtsPage.switchToPaymentFrame();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
