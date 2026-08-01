@@ -1,0 +1,73 @@
+package pages;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class MtsPaymentTest {
+
+    @Test
+    public void checkPaymentWindowTest() {
+
+        WebDriverManager.chromedriver().setup();
+        WebDriver driver = new ChromeDriver();
+
+        MtsPage mtsPage = new MtsPage(driver);
+
+        mtsPage.openSite();
+        mtsPage.acceptCookies();
+
+        // Заполняем форму
+        mtsPage.enterPhone("297777777");
+        mtsPage.enterSum("50");
+        mtsPage.enterEmail("abrakadabra228@test.com");
+
+        // Переходим на страницу оплаты
+        mtsPage.clickContinue();
+
+        mtsPage.switchToPaymentFrame();
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        // Ждём появления окна оплаты
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector(".pay-description__cost")));
+
+        // Проверяем сумму
+        assertEquals("50.00 BYN", mtsPage.getPaymentAmount());
+
+        // Проверяем информацию об оплате
+        assertEquals(
+                "Оплата: Услуги связи Номер:375297777777",
+                mtsPage.getPaymentInfo()
+        );
+
+        // Проверяем кнопку
+        assertEquals(
+                "Оплатить 50.00 BYN",
+                mtsPage.getPayButtonText()
+        );
+
+        // Проверяем названия полей карты
+        assertEquals("Номер карты", mtsPage.getCardNumberLabel());
+        assertEquals("Срок действия", mtsPage.getExpireLabel());
+        assertEquals("CVC", mtsPage.getCvcLabel());
+        assertEquals("Имя и фамилия на карте", mtsPage.getCardHolderLabel());
+
+        // Проверяем логотипы
+        assertTrue(mtsPage.visaLogoDisplayed());
+        assertTrue(mtsPage.masterCardLogoDisplayed());
+        assertTrue(mtsPage.belkartLogoDisplayed());
+
+        driver.quit();
+    }
+}
