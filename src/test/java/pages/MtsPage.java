@@ -168,8 +168,4 @@ public class MtsPage {
                 By.cssSelector(".payment-widget-iframe")
         ));
     }
-
-    public void switchToDefaultContent() {
-        driver.switchTo().defaultContent();
-    }
 }
