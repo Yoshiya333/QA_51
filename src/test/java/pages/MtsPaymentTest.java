@@ -1,6 +1,8 @@
 package pages;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -15,38 +17,48 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MtsPaymentTest {
 
-    @Test
-    public void checkPaymentWindowTest() {
+    private WebDriver driver;
+    private MtsPage mtsPage;
+
+    @BeforeEach
+    public void setUp() {
 
         WebDriverManager.chromedriver().setup();
-        WebDriver driver = new ChromeDriver();
 
-        MtsPage mtsPage = new MtsPage(driver);
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+
+        mtsPage = new MtsPage(driver);
 
         mtsPage.openSite();
         mtsPage.acceptCookies();
+    }
+
+    @Test
+    public void checkPaymentWindowTest() {
 
         // Заполняем форму
         mtsPage.enterPhone("297777777");
         mtsPage.enterSum("50");
         mtsPage.enterEmail("abrakadabra228@test.com");
 
-        // Переходим на страницу оплаты
+        // Переходим к оплате
         mtsPage.clickContinue();
 
-        // Проваливаемся в новое "окно"
+        // Переходим в iframe
         mtsPage.switchToPaymentFrame();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         // Ждём появления окна оплаты
         wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector(".pay-description__cost")));
+                By.cssSelector(".pay-description__cost")
+        ));
 
         // Проверяем сумму
         assertEquals("50.00 BYN", mtsPage.getPaymentAmount());
 
-        // Проверяем информацию об оплате
+        // Проверяем информацию
         assertEquals(
                 "Оплата: Услуги связи Номер:375297777777",
                 mtsPage.getPaymentInfo()
@@ -58,7 +70,7 @@ public class MtsPaymentTest {
                 mtsPage.getPayButtonText()
         );
 
-        // Проверяем названия полей карты
+        // Проверяем подписи полей
         assertEquals("Номер карты", mtsPage.getCardNumberLabel());
         assertEquals("Срок действия", mtsPage.getExpireLabel());
         assertEquals("CVC", mtsPage.getCvcLabel());
@@ -68,7 +80,13 @@ public class MtsPaymentTest {
         assertTrue(mtsPage.visaLogoDisplayed());
         assertTrue(mtsPage.masterCardLogoDisplayed());
         assertTrue(mtsPage.belkartLogoDisplayed());
+    }
 
-        driver.quit();
+    @AfterEach
+    public void tearDown() {
+
+        if (driver != null) {
+            driver.quit();
+        }
     }
 }

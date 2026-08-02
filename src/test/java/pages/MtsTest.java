@@ -1,11 +1,12 @@
 package pages;
 
-import org.junit.jupiter.api.Test;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import pages.MtsPage;
 
 import java.util.List;
 
@@ -13,27 +14,33 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MtsTest {
 
-    @Test
-    public void openSiteTest() {
+    private WebDriver driver;
+    private MtsPage mtsPage;
+
+    @BeforeEach
+    public void setUp() {
         WebDriverManager.chromedriver().setup();
-        WebDriver driver = new ChromeDriver();
-        MtsPage mtsPage = new MtsPage(driver);
+
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+
+        mtsPage = new MtsPage(driver);
 
         mtsPage.openSite();
         mtsPage.acceptCookies();
+    }
 
-        assertEquals("ОНЛАЙН ПОПОЛНЕНИЕ БЕЗ КОМИССИИ", mtsPage.getTitle());
+    @Test
+    public void openSiteTest() {
 
-        driver.quit();
+        assertEquals(
+                "ОНЛАЙН ПОПОЛНЕНИЕ БЕЗ КОМИССИИ",
+                mtsPage.getTitle()
+        );
     }
 
     @Test
     public void checkPaymentLogosTest() {
-        WebDriver driver = new ChromeDriver();
-        MtsPage mtsPage = new MtsPage(driver);
-
-        mtsPage.openSite();
-        mtsPage.acceptCookies();
 
         List<WebElement> logos = mtsPage.getPaymentLogos();
 
@@ -43,54 +50,34 @@ public class MtsTest {
         assertEquals("MasterCard", logos.get(2).getAttribute("alt"));
         assertEquals("MasterCard Secure Code", logos.get(3).getAttribute("alt"));
         assertEquals("Белкарт", logos.get(4).getAttribute("alt"));
-
-        driver.quit();
     }
 
     @Test
     public void checkMoreInfoLinkTest() {
-        WebDriver driver = new ChromeDriver();
-        MtsPage mtsPage = new MtsPage(driver);
 
-        mtsPage.openSite();
-        mtsPage.acceptCookies();
         mtsPage.clickMoreInfo();
         mtsPage.waitForMoreInfoPage();
 
-        assertTrue(mtsPage.getCurrentUrl().contains("poryadok-oplaty-i-bezopasnost-internet-platezhey"));
-
-        driver.quit();
+        assertTrue(
+                mtsPage.getCurrentUrl()
+                        .contains("poryadok-oplaty-i-bezopasnost-internet-platezhey")
+        );
     }
 
     @Test
     public void checkContinueButtonTest() {
-        WebDriver driver = new ChromeDriver();
-        MtsPage mtsPage = new MtsPage(driver);
 
-        mtsPage.openSite();
-        mtsPage.acceptCookies();
         mtsPage.enterPhone("297777777");
         mtsPage.enterSum("50");
         mtsPage.enterEmail("abrakadabra228@test.com");
-        mtsPage.clickContinue();
 
-        driver.quit();
+        mtsPage.clickContinue();
     }
 
     @Test
     public void checkAllPlaceholdersTest() {
 
-        WebDriver driver = new ChromeDriver();
-
-        MtsPage mtsPage = new MtsPage(driver);
-
-        mtsPage.openSite();
-
-        mtsPage.acceptCookies();
-
-        // -------------------------
         // Услуги связи
-        // -------------------------
 
         assertEquals(
                 "Номер телефона",
@@ -107,9 +94,7 @@ public class MtsTest {
                 mtsPage.getPlaceholder("connection-email")
         );
 
-        // -------------------------
         // Домашний интернет
-        // -------------------------
 
         mtsPage.selectService("Домашний интернет");
 
@@ -128,9 +113,7 @@ public class MtsTest {
                 mtsPage.getPlaceholder("internet-email")
         );
 
-        // -------------------------
         // Рассрочка
-        // -------------------------
 
         mtsPage.selectService("Рассрочка");
 
@@ -138,7 +121,6 @@ public class MtsTest {
                 "Номер счета на 44",
                 mtsPage.getPlaceholder("score-instalment")
         );
-
 
         assertEquals(
                 "Сумма",
@@ -150,9 +132,7 @@ public class MtsTest {
                 mtsPage.getPlaceholder("instalment-email")
         );
 
-        // -------------------------
         // Задолженность
-        // -------------------------
 
         mtsPage.selectService("Задолженность");
 
@@ -170,7 +150,12 @@ public class MtsTest {
                 "E-mail для отправки чека",
                 mtsPage.getPlaceholder("arrears-email")
         );
+    }
 
-        driver.quit();
+    @AfterEach
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
     }
 }

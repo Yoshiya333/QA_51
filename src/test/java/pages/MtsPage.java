@@ -167,6 +167,9 @@ public class MtsPage {
         wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(
                 By.cssSelector(".payment-widget-iframe")
         ));
+    }
 
+    public void switchToDefaultContent() {
+        driver.switchTo().defaultContent();
     }
 }
